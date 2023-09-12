@@ -17,9 +17,9 @@ pub fn vdist(
     let mut lat2 = if deg { lat2.to_radians() } else { lat2 };
     let mut lon2 = if deg { lon2.to_radians() } else { lon2 };
 
-    if lat1.abs() > FRAC_2_PI || lat2.abs() > FRAC_2_PI {
+    /*if lat1.abs() > FRAC_2_PI || lat2.abs() > FRAC_2_PI {
         return None;
-    }
+    }*/
 
     let a = ell.semimajor_axis;
     let b = ell.semiminor_axis;
@@ -33,8 +33,8 @@ pub fn vdist(
         lat2 = lat2.signum() * (FRAC_2_PI - 1e-10);
     }
 
-    let u1 = (1. - f) * lat1.tan();
-    let u2 = (1. - f) * lat2.tan();
+    let u1 = ((1. - f) * lat1.tan()).atan();
+    let u2 = ((1. - f) * lat2.tan()).atan();
     lon1 = lon1.rem_euclid(TAU);
     lon2 = lon2.rem_euclid(TAU);
 
@@ -49,7 +49,7 @@ pub fn vdist(
     let mut sigma = 0.;
     let mut cos2sigmam = 0.;
 
-    for _ in 0..100 {
+    for i in 0..=50 {
         let lambda0 = lambda;
 
         let sin_sigma = ((u2.cos() * lambda.sin()).powi(2)
@@ -79,8 +79,17 @@ pub fn vdist(
                     + c * sigma.sin()
                         * (cos2sigmam + c * sigma.cos() * (-1. + 2.0 * cos2sigmam.powi(2))));
 
+        if lambda > PI {
+            lambda = PI;
+            break;
+        }
+
         if (lambda - lambda0).abs() < 1e-12 {
             break;
+        }
+
+        if i == 50 {
+            lambda = PI;
         }
     }
 
@@ -196,7 +205,7 @@ pub fn vreckon(
                     * (cos2_sigma_m + c * cos_sigma * (-1. + 2. * cos2_sigma_m.powi(2))));
 
     let lon2 = (lon1 + lam).rem_euclid(TAU);
-    
+
     let lat2 = if deg { lat2.to_degrees() } else { lat2 };
     let lon2 = if deg { lon2.to_degrees() } else { lon2 };
 
