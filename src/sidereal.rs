@@ -16,12 +16,12 @@ pub fn juliandate(datetime: time::PrimitiveDateTime) -> f64 {
     let hour = datetime.hour() as f64;
     let day = datetime.day() as f64;
 
-    if year < 0. {
-        year -= 1.;
-        month += 12.;
+    if month < 3.0 {
+        year -= 1.0;
+        month += 12.0;
     }
 
-    let a = (year as f64 / 100.0).floor();
+    let a = (year / 100.0).floor();
     let b = 2.0 - a + (a / 4.0).floor();
     let c = ((second / 60.0 + minute) / 60.0 + hour) / 24.0;
 
