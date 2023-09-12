@@ -10,7 +10,7 @@ pub fn enu2aer(e: f64, n: f64, u: f64, deg: bool) -> (f64, f64, f64) {
     let r = e.hypot(n);
     let slant_range = r.hypot(u);
     let elev = u.atan2(r);
-    let mut az = n.atan2(e);
+    let mut az = e.atan2(n);
 
     if az < 0. {
         az = az.rem_euclid(TAU);
