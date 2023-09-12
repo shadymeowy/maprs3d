@@ -14,7 +14,7 @@ fn get_xyz0() -> (f64, f64, f64) {
 }
 
 fn get_xyzlla() -> Vec<((f64, f64, f64), (f64, f64, f64))> {
-    let ell = maprs3d::Ellipsoid::get_wgs84();
+    let ell = maprs3d::Ellipsoid::wgs84();
     let a = ell.semimajor_axis;
     let b = ell.semiminor_axis;
     vec![
@@ -43,7 +43,7 @@ fn get_xyzlla() -> Vec<((f64, f64, f64), (f64, f64, f64))> {
 }
 
 fn get_llaxyz() -> Vec<((f64, f64, f64), (f64, f64, f64))> {
-    let ell = maprs3d::Ellipsoid::get_wgs84();
+    let ell = maprs3d::Ellipsoid::wgs84();
     let a = ell.semimajor_axis;
     let b = ell.semiminor_axis;
 
@@ -75,7 +75,7 @@ fn is_close(abc: (f64, f64, f64), xyz: (f64, f64, f64), rel_tol: f64, abs_tol: f
 
 #[test]
 fn test_scalar_geodetic2ecef() {
-    let ell = maprs3d::Ellipsoid::get_wgs84();
+    let ell = maprs3d::Ellipsoid::wgs84();
 
     let lla = get_lla0();
     let xyz = maprs3d::geodetic2ecef(lla.0, lla.1, lla.2, &ell, true).unwrap();
@@ -85,7 +85,7 @@ fn test_scalar_geodetic2ecef() {
 
 #[test]
 fn test_scalar_ecef2geodetic() {
-    let ell = maprs3d::Ellipsoid::get_wgs84();
+    let ell = maprs3d::Ellipsoid::wgs84();
 
     let xyz = get_xyz0();
     let lla = maprs3d::ecef2geodetic(xyz.0, xyz.1, xyz.2, &ell, true);
@@ -95,7 +95,7 @@ fn test_scalar_ecef2geodetic() {
 
 #[test]
 fn test_ecef() {
-    let ell = maprs3d::Ellipsoid::get_wgs84();
+    let ell = maprs3d::Ellipsoid::wgs84();
     let a = ell.semimajor_axis;
 
     let lla = get_lla0();
@@ -119,7 +119,7 @@ fn test_ecef() {
 
 #[test]
 fn test_geodetic2ecef() {
-    let ell = maprs3d::Ellipsoid::get_wgs84();
+    let ell = maprs3d::Ellipsoid::wgs84();
 
     let llaxyz = get_llaxyz();
     for (lla, xyz) in llaxyz {
@@ -130,7 +130,7 @@ fn test_geodetic2ecef() {
 
 #[test]
 fn test_ecef2geodetic() {
-    let ell = maprs3d::Ellipsoid::get_wgs84();
+    let ell = maprs3d::Ellipsoid::wgs84();
 
     let xyzlla = get_xyzlla();
     for (xyz, lla) in xyzlla {

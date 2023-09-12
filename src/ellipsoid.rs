@@ -1,12 +1,3 @@
-use std::collections::HashMap;
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct Model {
-    pub name: String,
-    pub a: f64,
-    pub b: f64,
-}
-
 #[derive(Clone, Debug, PartialEq)]
 pub struct Ellipsoid {
     pub model: String,
@@ -37,327 +28,193 @@ impl Ellipsoid {
         }
     }
 
-    pub fn get_wgs84() -> Ellipsoid {
+    pub fn maupertuis() -> Ellipsoid {
+        Ellipsoid::new(6397300.0, 6363806.283, "Maupertuis (1738)", "maupertuis")
+    }
+    pub fn plessis() -> Ellipsoid {
+        Ellipsoid::new(6376523.0, 6355862.9333, "Plessis (1817)", "plessis")
+    }
+    pub fn everest1830() -> Ellipsoid {
+        Ellipsoid::new(6377299.365, 6356098.359, "Everest (1830)", "everest1830")
+    }
+    pub fn everest1830m() -> Ellipsoid {
+        Ellipsoid::new(
+            6377304.063,
+            6356103.039,
+            "Everest 1830 Modified (1967)",
+            "everest1830m",
+        )
+    }
+    pub fn everest1967() -> Ellipsoid {
+        Ellipsoid::new(
+            6377298.556,
+            6356097.55,
+            "Everest 1830 (1967 Definition)",
+            "everest1967",
+        )
+    }
+    pub fn airy() -> Ellipsoid {
+        Ellipsoid::new(6377563.396, 6356256.909, "Airy (1830)", "airy")
+    }
+    pub fn bessel() -> Ellipsoid {
+        Ellipsoid::new(6377397.155, 6356078.963, "Bessel (1841)", "bessel")
+    }
+    pub fn clarke1866() -> Ellipsoid {
+        Ellipsoid::new(6378206.4, 6356583.8, "Clarke (1866)", "clarke1866")
+    }
+    pub fn clarke1878() -> Ellipsoid {
+        Ellipsoid::new(6378190.0, 6356456.0, "Clarke (1878)", "clarke1878")
+    }
+    pub fn clarke1860() -> Ellipsoid {
+        Ellipsoid::new(6378249.145, 6356514.87, "Clarke (1880)", "clarke1860")
+    }
+    pub fn helmert() -> Ellipsoid {
+        Ellipsoid::new(6378200.0, 6356818.17, "Helmert (1906)", "helmert")
+    }
+    pub fn hayford() -> Ellipsoid {
+        Ellipsoid::new(6378388.0, 6356911.946, "Hayford (1910)", "hayford")
+    }
+    pub fn international1924() -> Ellipsoid {
+        Ellipsoid::new(
+            6378388.0,
+            6356911.946,
+            "International (1924)",
+            "international1924",
+        )
+    }
+    pub fn krassovsky1940() -> Ellipsoid {
+        Ellipsoid::new(
+            6378245.0,
+            6356863.019,
+            "Krassovsky (1940)",
+            "krassovsky1940",
+        )
+    }
+    pub fn wgs66() -> Ellipsoid {
+        Ellipsoid::new(6378145.0, 6356759.769, "WGS66 (1966)", "wgs66")
+    }
+    pub fn australian() -> Ellipsoid {
+        Ellipsoid::new(
+            6378160.0,
+            6356774.719,
+            "Australian National (1966)",
+            "australian",
+        )
+    }
+    pub fn international1967() -> Ellipsoid {
+        Ellipsoid::new(
+            6378157.5,
+            6356772.2,
+            "New International (1967)",
+            "international1967",
+        )
+    }
+    pub fn grs67() -> Ellipsoid {
+        Ellipsoid::new(6378160.0, 6356774.516, "GRS-67 (1967)", "grs67")
+    }
+    pub fn sa1969() -> Ellipsoid {
+        Ellipsoid::new(6378160.0, 6356774.719, "South American (1969)", "sa1969")
+    }
+    pub fn wgs72() -> Ellipsoid {
+        Ellipsoid::new(6378135.0, 6356750.52001609, "WGS-72 (1972)", "wgs72")
+    }
+    pub fn grs80() -> Ellipsoid {
+        Ellipsoid::new(6378137.0, 6356752.31414036, "GRS-80 (1979)", "grs80")
+    }
+    pub fn wgs84() -> Ellipsoid {
         Ellipsoid::new(6378137.0, 6356752.31424518, "WGS-84 (1984)", "wgs84")
     }
-}
-
-pub struct EllipsoidLibrary {
-    models: HashMap<&'static str, Model>,
-}
-
-impl EllipsoidLibrary {
-    pub fn new() -> Self {
-        let models: HashMap<&'static str, Model> = [
-            (
-                "maupertuis",
-                Model {
-                    name: "Maupertuis (1738)".to_string(),
-                    a: 6397300.0,
-                    b: 6363806.283,
-                },
-            ),
-            (
-                "plessis",
-                Model {
-                    name: "Plessis (1817)".to_string(),
-                    a: 6376523.0,
-                    b: 6355862.9333,
-                },
-            ),
-            (
-                "everest1830",
-                Model {
-                    name: "Everest (1830)".to_string(),
-                    a: 6377299.365,
-                    b: 6356098.359,
-                },
-            ),
-            (
-                "everest1830m",
-                Model {
-                    name: "Everest 1830 Modified (1967)".to_string(),
-                    a: 6377304.063,
-                    b: 6356103.039,
-                },
-            ),
-            (
-                "everest1967",
-                Model {
-                    name: "Everest 1830 (1967 Definition)".to_string(),
-                    a: 6377298.556,
-                    b: 6356097.55,
-                },
-            ),
-            (
-                "airy",
-                Model {
-                    name: "Airy (1830)".to_string(),
-                    a: 6377563.396,
-                    b: 6356256.909,
-                },
-            ),
-            (
-                "bessel",
-                Model {
-                    name: "Bessel (1841)".to_string(),
-                    a: 6377397.155,
-                    b: 6356078.963,
-                },
-            ),
-            (
-                "clarke1866",
-                Model {
-                    name: "Clarke (1866)".to_string(),
-                    a: 6378206.4,
-                    b: 6356583.8,
-                },
-            ),
-            (
-                "clarke1878",
-                Model {
-                    name: "Clarke (1878)".to_string(),
-                    a: 6378190.0,
-                    b: 6356456.0,
-                },
-            ),
-            (
-                "clarke1860",
-                Model {
-                    name: "Clarke (1880)".to_string(),
-                    a: 6378249.145,
-                    b: 6356514.87,
-                },
-            ),
-            (
-                "helmert",
-                Model {
-                    name: "Helmert (1906)".to_string(),
-                    a: 6378200.0,
-                    b: 6356818.17,
-                },
-            ),
-            (
-                "hayford",
-                Model {
-                    name: "Hayford (1910)".to_string(),
-                    a: 6378388.0,
-                    b: 6356911.946,
-                },
-            ),
-            (
-                "international1924",
-                Model {
-                    name: "International (1924)".to_string(),
-                    a: 6378388.0,
-                    b: 6356911.946,
-                },
-            ),
-            (
-                "krassovsky1940",
-                Model {
-                    name: "Krassovsky (1940)".to_string(),
-                    a: 6378245.0,
-                    b: 6356863.019,
-                },
-            ),
-            (
-                "wgs66",
-                Model {
-                    name: "WGS66 (1966)".to_string(),
-                    a: 6378145.0,
-                    b: 6356759.769,
-                },
-            ),
-            (
-                "australian",
-                Model {
-                    name: "Australian National (1966)".to_string(),
-                    a: 6378160.0,
-                    b: 6356774.719,
-                },
-            ),
-            (
-                "international1967",
-                Model {
-                    name: "New International (1967)".to_string(),
-                    a: 6378157.5,
-                    b: 6356772.2,
-                },
-            ),
-            (
-                "grs67",
-                Model {
-                    name: "GRS-67 (1967)".to_string(),
-                    a: 6378160.0,
-                    b: 6356774.516,
-                },
-            ),
-            (
-                "sa1969",
-                Model {
-                    name: "South American (1969)".to_string(),
-                    a: 6378160.0,
-                    b: 6356774.719,
-                },
-            ),
-            (
-                "wgs72",
-                Model {
-                    name: "WGS-72 (1972)".to_string(),
-                    a: 6378135.0,
-                    b: 6356750.52001609,
-                },
-            ),
-            (
-                "grs80",
-                Model {
-                    name: "GRS-80 (1979)".to_string(),
-                    a: 6378137.0,
-                    b: 6356752.31414036,
-                },
-            ),
-            (
-                "wgs84",
-                Model {
-                    name: "WGS-84 (1984)".to_string(),
-                    a: 6378137.0,
-                    b: 6356752.31424518,
-                },
-            ),
-            (
-                "wgs84_mean",
-                Model {
-                    name: "WGS-84 (1984) Mean".to_string(),
-                    a: 6371008.7714,
-                    b: 6371008.7714,
-                },
-            ),
-            (
-                "iers1989",
-                Model {
-                    name: "IERS (1989)".to_string(),
-                    a: 6378136.0,
-                    b: 6356751.302,
-                },
-            ),
-            (
-                "pz90.11",
-                Model {
-                    name: "ПЗ-90 (2011)".to_string(),
-                    a: 6378136.0,
-                    b: 6356751.3618,
-                },
-            ),
-            (
-                "iers2003",
-                Model {
-                    name: "IERS (2003)".to_string(),
-                    a: 6378136.6,
-                    b: 6356751.9,
-                },
-            ),
-            (
-                "gsk2011",
-                Model {
-                    name: "ГСК (2011)".to_string(),
-                    a: 6378136.5,
-                    b: 6356751.758,
-                },
-            ),
-            (
-                "mercury",
-                Model {
-                    name: "Mercury".to_string(),
-                    a: 2440500.0,
-                    b: 2438300.0,
-                },
-            ),
-            (
-                "venus",
-                Model {
-                    name: "Venus".to_string(),
-                    a: 6051800.0,
-                    b: 6051800.0,
-                },
-            ),
-            (
-                "moon",
-                Model {
-                    name: "Moon".to_string(),
-                    a: 1738100.0,
-                    b: 1736000.0,
-                },
-            ),
-            (
-                "mars",
-                Model {
-                    name: "Mars".to_string(),
-                    a: 3396900.0,
-                    b: 3376097.80585952,
-                },
-            ),
-            (
-                "jupyter",
-                Model {
-                    name: "Jupiter".to_string(),
-                    a: 71492000.0,
-                    b: 66770054.3475922,
-                },
-            ),
-            (
-                "io",
-                Model {
-                    name: "Io".to_string(),
-                    a: 1829.7,
-                    b: 1815.8,
-                },
-            ),
-            (
-                "saturn",
-                Model {
-                    name: "Saturn".to_string(),
-                    a: 60268000.0,
-                    b: 54364301.5271271,
-                },
-            ),
-            (
-                "uranus",
-                Model {
-                    name: "Uranus".to_string(),
-                    a: 25559000.0,
-                    b: 24973000.0,
-                },
-            ),
-            (
-                "neptune",
-                Model {
-                    name: "Neptune".to_string(),
-                    a: 24764000.0,
-                    b: 24341000.0,
-                },
-            ),
-            (
-                "pluto",
-                Model {
-                    name: "Pluto".to_string(),
-                    a: 1188000.0,
-                    b: 1188000.0,
-                },
-            ),
-        ]
-        .iter()
-        .cloned()
-        .collect();
-
-        EllipsoidLibrary { models }
+    pub fn wgs84_mean() -> Ellipsoid {
+        Ellipsoid::new(
+            6371008.7714,
+            6371008.7714,
+            "WGS-84 (1984) Mean",
+            "wgs84_mean",
+        )
+    }
+    pub fn iers1989() -> Ellipsoid {
+        Ellipsoid::new(6378136.0, 6356751.302, "IERS (1989)", "iers1989")
+    }
+    pub fn pz90_11() -> Ellipsoid {
+        Ellipsoid::new(6378136.0, 6356751.3618, "ПЗ-90 (2011)", "pz90.11")
+    }
+    pub fn iers2003() -> Ellipsoid {
+        Ellipsoid::new(6378136.6, 6356751.9, "IERS (2003)", "iers2003")
+    }
+    pub fn gsk2011() -> Ellipsoid {
+        Ellipsoid::new(6378136.5, 6356751.758, "ГСК (2011)", "gsk2011")
+    }
+    pub fn mercury() -> Ellipsoid {
+        Ellipsoid::new(2440500.0, 2438300.0, "Mercury", "mercury")
+    }
+    pub fn venus() -> Ellipsoid {
+        Ellipsoid::new(6051800.0, 6051800.0, "Venus", "venus")
+    }
+    pub fn moon() -> Ellipsoid {
+        Ellipsoid::new(1738100.0, 1736000.0, "Moon", "moon")
+    }
+    pub fn mars() -> Ellipsoid {
+        Ellipsoid::new(3396900.0, 3376097.80585952, "Mars", "mars")
+    }
+    pub fn jupyter() -> Ellipsoid {
+        Ellipsoid::new(71492000.0, 66770054.3475922, "Jupiter", "jupyter")
+    }
+    pub fn io() -> Ellipsoid {
+        Ellipsoid::new(1829.7, 1815.8, "Io", "io")
+    }
+    pub fn saturn() -> Ellipsoid {
+        Ellipsoid::new(60268000.0, 54364301.5271271, "Saturn", "saturn")
+    }
+    pub fn uranus() -> Ellipsoid {
+        Ellipsoid::new(25559000.0, 24973000.0, "Uranus", "uranus")
+    }
+    pub fn neptune() -> Ellipsoid {
+        Ellipsoid::new(24764000.0, 24341000.0, "Neptune", "neptune")
+    }
+    pub fn pluto() -> Ellipsoid {
+        Ellipsoid::new(1188000.0, 1188000.0, "Pluto", "pluto")
     }
 
-    pub fn get_ellipsoid(&self, name: &str) -> Option<Ellipsoid> {
-        if let Some(model) = self.models.get(name) {
-            Some(Ellipsoid::new(model.a, model.b, &model.name, name))
-        } else {
-            None
+    pub fn get(name: &str) -> Option<Ellipsoid> {
+        match name {
+            "maupertuis" => Some(Ellipsoid::maupertuis()),
+            "plessis" => Some(Ellipsoid::plessis()),
+            "everest1830" => Some(Ellipsoid::everest1830()),
+            "everest1830m" => Some(Ellipsoid::everest1830m()),
+            "everest1967" => Some(Ellipsoid::everest1967()),
+            "airy" => Some(Ellipsoid::airy()),
+            "bessel" => Some(Ellipsoid::bessel()),
+            "clarke1866" => Some(Ellipsoid::clarke1866()),
+            "clarke1878" => Some(Ellipsoid::clarke1878()),
+            "clarke1860" => Some(Ellipsoid::clarke1860()),
+            "helmert" => Some(Ellipsoid::helmert()),
+            "hayford" => Some(Ellipsoid::hayford()),
+            "international1924" => Some(Ellipsoid::international1924()),
+            "krassovsky1940" => Some(Ellipsoid::krassovsky1940()),
+            "wgs66" => Some(Ellipsoid::wgs66()),
+            "australian" => Some(Ellipsoid::australian()),
+            "international1967" => Some(Ellipsoid::international1967()),
+            "grs67" => Some(Ellipsoid::grs67()),
+            "sa1969" => Some(Ellipsoid::sa1969()),
+            "wgs72" => Some(Ellipsoid::wgs72()),
+            "grs80" => Some(Ellipsoid::grs80()),
+            "wgs84" => Some(Ellipsoid::wgs84()),
+            "wgs84_mean" => Some(Ellipsoid::wgs84_mean()),
+            "iers1989" => Some(Ellipsoid::iers1989()),
+            "pz90.11" => Some(Ellipsoid::pz90_11()),
+            "iers2003" => Some(Ellipsoid::iers2003()),
+            "gsk2011" => Some(Ellipsoid::gsk2011()),
+            "mercury" => Some(Ellipsoid::mercury()),
+            "venus" => Some(Ellipsoid::venus()),
+            "moon" => Some(Ellipsoid::moon()),
+            "mars" => Some(Ellipsoid::mars()),
+            "jupyter" => Some(Ellipsoid::jupyter()),
+            "io" => Some(Ellipsoid::io()),
+            "saturn" => Some(Ellipsoid::saturn()),
+            "uranus" => Some(Ellipsoid::uranus()),
+            "neptune" => Some(Ellipsoid::neptune()),
+            "pluto" => Some(Ellipsoid::pluto()),
+            _ => None,
         }
     }
 }
@@ -366,20 +223,23 @@ impl EllipsoidLibrary {
 mod tests {
     #[test]
     fn test_ellipsoid() {
-        use super::EllipsoidLibrary;
+        use super::Ellipsoid;
 
-        let library = EllipsoidLibrary::new();
-
-        let ellipsoid = library.get_ellipsoid("wgs84").unwrap();
+        let ellipsoid = Ellipsoid::get("wgs84").unwrap();
 
         assert_eq!(ellipsoid.name, "WGS-84 (1984)");
         assert_eq!(ellipsoid.semimajor_axis, 6378137.0);
         assert_eq!(ellipsoid.semiminor_axis, 6356752.31424518);
 
-        let ellipsoid = library.get_ellipsoid("wgs84_mean").unwrap();
+        let ellipsoid = Ellipsoid::get("wgs84_mean").unwrap();
 
         assert_eq!(ellipsoid.name, "WGS-84 (1984) Mean");
         assert_eq!(ellipsoid.semimajor_axis, 6371008.7714);
         assert_eq!(ellipsoid.semiminor_axis, 6371008.7714);
+
+        let ellipsoid1 = Ellipsoid::wgs72();
+        let ellipsoid2 = Ellipsoid::get("wgs72").unwrap();
+
+        assert_eq!(ellipsoid1, ellipsoid2);
     }
 }

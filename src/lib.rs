@@ -22,7 +22,7 @@ pub use ecef::{
     geodetic2eci, uvw2enu,
 };
 pub use eci::{ecef2eci, eci2ecef};
-pub use ellipsoid::{Ellipsoid, EllipsoidLibrary};
+pub use ellipsoid::Ellipsoid;
 pub use enu::{aer2enu, enu2aer, enu2geodetic, geodetic2enu};
 pub use haversine::{anglesep, haversine};
 pub use latitude::{

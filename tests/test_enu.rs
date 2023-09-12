@@ -1,6 +1,6 @@
 #[test]
 fn test_scalar_enu() {
-    let ell = maprs3d::Ellipsoid::get_wgs84();
+    let ell = maprs3d::Ellipsoid::wgs84();
     let (lat0, lon0, h0) = (0., 90., -100.);
     let xyz = (0., ell.semimajor_axis, 50.);
 
@@ -11,7 +11,7 @@ fn test_scalar_enu() {
 
 #[test]
 fn test_enu_ecef() {
-    let ell = maprs3d::Ellipsoid::get_wgs84();
+    let ell = maprs3d::Ellipsoid::wgs84();
 
     let enu = (0., 0., 0.);
     let lla = (0., 0., 0.);
