@@ -1,4 +1,4 @@
-use std::vec;
+use std::{vec, f64::NAN};
 
 fn get_lla0() -> (f64, f64, f64) {
     (42., -82., 200.)
@@ -54,6 +54,13 @@ fn get_llaxyz() -> Vec<((f64, f64, f64), (f64, f64, f64))> {
         ((90., 0., -1.), (0., 0., b - 1.)),
         ((90., 15., -1.), (0., 0., b - 1.)),
         ((-90., 0., -1.), (0., 0., -b + 1.)),
+    ]
+}
+
+fn get_aerllalla0() -> Vec<((f64, f64, f64), (f64, f64, f64), (f64, f64, f64))> {
+    vec![
+        ((33., 77., 1000.), (42.0016981935, -81.99852, 1174.374035), (42., -82., 200.)),
+        ((0., 90., 10000.), (0., 0., 10000.), (0., 0., 0.))
     ]
 }
 
@@ -141,10 +148,39 @@ fn test_ecef2geodetic() {
 
 #[test]
 fn test_aer_geodetic() {
-    // TODO: test aer2geodetic
+    let ell = maprs3d::Ellipsoid::wgs84();
+
+    for (aer, lla, lla0) in get_aerllalla0() {
+        let lla2 =
+            maprs3d::aer2geodetic(aer.0, aer.1, aer.2, lla0.0, lla0.1, lla0.2, &ell, true).unwrap();
+
+        assert!(is_close(lla, lla2, 1e-6, 1e-12));
+
+        let raer = (aer.0.to_radians(), aer.1.to_radians(), aer.2);
+        let rlla = (lla.0.to_radians(), lla.1.to_radians(), lla.2);
+        let rlla0 = (lla0.0.to_radians(), lla0.1.to_radians(), lla0.2);
+
+        let rlla2 = maprs3d::aer2geodetic(raer.0, raer.1, raer.2, rlla0.0, rlla0.1, rlla0.2, &ell, false)
+            .unwrap();
+
+        assert!(is_close(rlla, rlla2, 1e-6, 1e-12));
+
+        let aer2 = maprs3d::geodetic2aer(lla.0, lla.1, lla.2, lla0.0, lla0.1, lla0.2, &ell, true).unwrap();
+        assert!(is_close(aer, aer2, 1e-3, 1e-12));
+
+        let raer2 = maprs3d::geodetic2aer(rlla.0, rlla.1, rlla.2, rlla0.0, rlla0.1, rlla0.2, &ell, false)
+            .unwrap();
+        assert!(is_close(raer, raer2, 1e-3, 1e-12));
+    }
 }
 
 #[test]
 fn test_scalar_nan() {
-    // TODO: test nan
+    let lla0 = get_lla0();
+    let ell = maprs3d::Ellipsoid::wgs84();
+
+    let aer = maprs3d::geodetic2aer(NAN, NAN, NAN, lla0.0, lla0.1, lla0.2, &ell, true).unwrap();
+    assert!(aer.0.is_nan());
+    assert!(aer.1.is_nan());
+    assert!(aer.2.is_nan());
 }
