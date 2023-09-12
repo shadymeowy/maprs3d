@@ -1,10 +1,8 @@
-use time::{Date, Month, PrimitiveDateTime, Time};
+use time::PrimitiveDateTime;
+use time_macros::datetime;
 
 fn get_t0() -> PrimitiveDateTime {
-    PrimitiveDateTime::new(
-        Date::from_calendar_date(2014, Month::April, 6).unwrap(),
-        Time::from_hms(8, 0, 0).unwrap()
-    )
+    datetime!(2014-04-06 08:00:00)
 }
 
 #[test]
