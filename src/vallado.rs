@@ -1,4 +1,4 @@
-use std::f64::consts::FRAC_2_PI;
+use std::f64::consts::{FRAC_2_PI, TAU};
 
 use crate::datetime2sidereal;
 
@@ -10,29 +10,27 @@ pub fn azel2radec(
     deg: bool,
     datetime: time::PrimitiveDateTime,
 ) -> Option<(f64, f64)> {
-    let (az_, el_, lat_, lon_) = if deg {
-        (
-            az.to_radians(),
-            el.to_radians(),
-            lat.to_radians(),
-            lon.to_radians(),
-        )
-    } else {
-        (az, el, lat, lon)
-    };
+    let az = if deg { az.to_radians() } else { az };
+    let el = if deg { el.to_radians() } else { el };
+    let lat = if deg { lat.to_radians() } else { lat };
+    let lon = if deg { lon.to_radians() } else { lon };
 
-    if lat_.abs() > FRAC_2_PI {
+    if lat.abs() > FRAC_2_PI {
         return None;
     }
 
-    let dec = el_.sin() * lat_.sin() + el_.cos() * lat_.cos() * az_.sin();
+    let dec = el.sin() * lat.sin() + el.cos() * lat.cos() * az.sin();
 
-    let lha = (-(az_.sin() * el_.cos()) / dec.cos())
-        .atan2((el_.sin() - lat_.sin() * dec.sin()) / (dec.cos() * lat_.cos()));
+    let lha = (-(az.sin() * el.cos()) / dec.cos())
+        .atan2((el.sin() - lat.sin() * dec.sin()) / (dec.cos() * lat.cos()));
 
-    let lst = datetime2sidereal(datetime, lon_);
-    
-    Some(((lst-lha).to_degrees().rem_euclid(360.0), dec.to_degrees()))
+    let lst = datetime2sidereal(datetime, lon);
+    let ra = (lst - lha).rem_euclid(TAU);
+
+    let ra = if deg { ra.to_degrees() } else { ra };
+    let dec = if deg { dec.to_degrees() } else { dec };
+
+    Some((ra, dec))
 }
 
 pub fn radec2azel(
@@ -43,27 +41,25 @@ pub fn radec2azel(
     deg: bool,
     datetime: time::PrimitiveDateTime,
 ) -> Option<(f64, f64)> {
-    let (ra_, dec_, lat_, lon_) = if deg {
-        (
-            ra.to_radians(),
-            dec.to_radians(),
-            lat.to_radians(),
-            lon.to_radians(),
-        )
-    } else {
-        (ra, dec, lat, lon)
-    };
+    let ra = if deg { ra.to_radians() } else { ra };
+    let dec = if deg { dec.to_radians() } else { dec };
+    let lat = if deg { lat.to_radians() } else { lat };
+    let lon = if deg { lon.to_radians() } else { lon };
 
-    if lat_.abs() > FRAC_2_PI {
+    if lat.abs() > FRAC_2_PI {
         return None;
     }
 
-    let ha = (datetime2sidereal(datetime, lon_) - ra_).to_radians();
+    let ha = (datetime2sidereal(datetime, lon) - ra).to_radians();
 
-    let el = dec_.sin() * lat_.sin() + dec_.cos() * lat_.cos() * ha.sin();
+    let el = dec.sin() * lat.sin() + dec.cos() * lat.cos() * ha.sin();
 
-    let az = (-(ha.sin() * dec_.cos()) / el.cos())
-        .atan2((dec_.sin() - lat_.sin() * el.sin()) / (el.cos() * lat.cos()));
+    let az = (-(ha.sin() * dec.cos()) / el.cos())
+        .atan2((dec.sin() - lat.sin() * el.sin()) / (el.cos() * lat.cos()))
+        .rem_euclid(TAU);
 
-    Some((az.to_degrees().rem_euclid(360.0), el.to_degrees()))
+    let az = if deg { az.to_degrees() } else { az };
+    let el = if deg { el.to_degrees() } else { el };
+
+    Some((az, el))
 }

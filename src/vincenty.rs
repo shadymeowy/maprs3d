@@ -12,18 +12,12 @@ pub fn vdist(
     ell: &Ellipsoid,
     deg: bool,
 ) -> Option<(f64, f64)> {
-    let (mut lat1_, mut lon1_, mut lat2_, mut lon2_) = if deg {
-        (
-            lat1.to_radians(),
-            lon1.to_radians(),
-            lat2.to_radians(),
-            lon2.to_radians(),
-        )
-    } else {
-        (lat1, lon1, lat2, lon2)
-    };
+    let mut lat1 = if deg { lat1.to_radians() } else { lat1 };
+    let mut lon1 = if deg { lon1.to_radians() } else { lon1 };
+    let mut lat2 = if deg { lat2.to_radians() } else { lat2 };
+    let mut lon2 = if deg { lon2.to_radians() } else { lon2 };
 
-    if lat1_.abs() > FRAC_2_PI || lat2_.abs() > FRAC_2_PI {
+    if lat1.abs() > FRAC_2_PI || lat2.abs() > FRAC_2_PI {
         return None;
     }
 
@@ -32,19 +26,19 @@ pub fn vdist(
     let f = ell.flattening;
 
     if (FRAC_2_PI - lat1.abs()).abs() < 1e-10 {
-        lat1_ = lat1.signum() * (FRAC_2_PI - 1e-10);
+        lat1 = lat1.signum() * (FRAC_2_PI - 1e-10);
     }
 
     if (FRAC_2_PI - lat2.abs()).abs() < 1e-10 {
-        lat2_ = lat2.signum() * (FRAC_2_PI - 1e-10);
+        lat2 = lat2.signum() * (FRAC_2_PI - 1e-10);
     }
 
-    let u1 = (1. - f) * lat1_.tan();
-    let u2 = (1. - f) * lat2_.tan();
-    lon1_ = lon1_.rem_euclid(TAU);
-    lon2_ = lon2_.rem_euclid(TAU);
+    let u1 = (1. - f) * lat1.tan();
+    let u2 = (1. - f) * lat2.tan();
+    lon1 = lon1.rem_euclid(TAU);
+    lon2 = lon2.rem_euclid(TAU);
 
-    let mut l = lon2_ - lon1_;
+    let mut l = lon2 - lon1;
 
     if l > PI {
         l = TAU - l;
@@ -118,11 +112,9 @@ pub fn vdist(
     let den = u1.cos() * u2.sin() - u1.sin() * u2.cos() * lambda.cos();
     let az = num.atan2(den).rem_euclid(TAU);
 
-    if deg {
-        Some((dist_m, az.to_degrees()))
-    } else {
-        Some((dist_m, az))
-    }
+    let az = if deg { az.to_degrees() } else { az };
+
+    Some((dist_m, az))
 }
 
 pub fn vreckon(
@@ -133,13 +125,11 @@ pub fn vreckon(
     ell: &Ellipsoid,
     deg: bool,
 ) -> Option<(f64, f64)> {
-    let (mut lat1_, lon1_, azim_) = if deg {
-        (lat1.to_radians(), lon1.to_radians(), azim.to_radians())
-    } else {
-        (lat1, lon1, azim)
-    };
+    let mut lat1 = if deg { lat1.to_radians() } else { lat1 };
+    let lon1 = if deg { lon1.to_radians() } else { lon1 };
+    let azim = if deg { azim.to_radians() } else { azim };
 
-    if lat1_.abs() > FRAC_2_PI {
+    if lat1.abs() > FRAC_2_PI {
         return None;
     }
 
@@ -148,14 +138,14 @@ pub fn vreckon(
     let f = ell.flattening;
 
     if (FRAC_2_PI - lat1.abs()).abs() < 1e-10 {
-        lat1_ = lat1.signum() * (FRAC_2_PI - 1e-10);
+        lat1 = lat1.signum() * (FRAC_2_PI - 1e-10);
     }
 
-    let alpha1 = azim_;
+    let alpha1 = azim;
     let sin_alpha1 = alpha1.sin();
     let cos_alpha1 = alpha1.cos();
 
-    let tan_u1 = (1. - f) * lat1_.tan();
+    let tan_u1 = (1. - f) * lat1.tan();
     let cos_u1 = 1. / (1. + tan_u1.powi(2)).sqrt();
     let sin_u1 = tan_u1 * cos_u1;
     let sigma1 = tan_u1.atan2(cos_alpha1);
@@ -205,13 +195,12 @@ pub fn vreckon(
                 + c * sin_sigma
                     * (cos2_sigma_m + c * cos_sigma * (-1. + 2. * cos2_sigma_m.powi(2))));
 
-    let lon2 = (lon1_ + lam).rem_euclid(TAU);
+    let lon2 = (lon1 + lam).rem_euclid(TAU);
+    
+    let lat2 = if deg { lat2.to_degrees() } else { lat2 };
+    let lon2 = if deg { lon2.to_degrees() } else { lon2 };
 
-    if deg {
-        Some((lat2.to_degrees(), lon2.to_degrees()))
-    } else {
-        Some((lat2, lon2))
-    }
+    Some((lat2, lon2))
 }
 
 pub fn track2(
@@ -223,24 +212,18 @@ pub fn track2(
     deg: bool,
     npts: usize,
 ) -> Option<Vec<(f64, f64)>> {
-    let (lat1_, lon1_, lat2_, lon2_) = if deg {
-        (
-            lat1.to_radians(),
-            lon1.to_radians(),
-            lat2.to_radians(),
-            lon2.to_radians(),
-        )
-    } else {
-        (lat1, lon1, lat2, lon2)
-    };
+    let lat1 = if deg { lat1.to_radians() } else { lat1 };
+    let lon1 = if deg { lon1.to_radians() } else { lon1 };
+    let lat2 = if deg { lat2.to_radians() } else { lat2 };
+    let lon2 = if deg { lon2.to_radians() } else { lon2 };
 
-    if lat1_.abs() > FRAC_2_PI || lat2_.abs() > FRAC_2_PI {
+    if lat1.abs() > FRAC_2_PI || lat2.abs() > FRAC_2_PI {
         return None;
     }
 
     let gcarclen = 2.0
-        * ((((lat1_ - lat2) / 2.).sin().powi(2)
-            + lat1_.cos() * lat2_.cos() * ((lon1_ - lon2_) / 2.).sin().powi(2))
+        * ((((lat1 - lat2) / 2.).sin().powi(2)
+            + lat1.cos() * lat2.cos() * ((lon1 - lon2) / 2.).sin().powi(2))
         .sqrt())
         .asin();
 
@@ -250,17 +233,17 @@ pub fn track2(
 
     let pts = match npts {
         0 => None,
-        1 => Some(vec![(lat1_, lon1_)]),
-        2 => Some(vec![(lat1_, lon1_), (lat2_, lon2_)]),
+        1 => Some(vec![(lat1, lon1)]),
+        2 => Some(vec![(lat1, lon1), (lat2, lon2)]),
         _ => {
-            let mut latpt = lat1_;
-            let mut lonpt = lon1_;
+            let mut latpt = lat1;
+            let mut lonpt = lon1;
 
             let (distance, mut azimuth) = vdist(lat1, lon1, lat2, lon2, ell, false)?;
             let incdist = distance / (npts - 1) as f64;
 
             let mut pts = Vec::with_capacity(npts);
-            pts.push((lat1_, lon1_));
+            pts.push((lat1, lon1));
 
             for _ in 1..=npts {
                 let (latptnew, lonptnew) = vreckon(latpt, lonpt, incdist, azimuth, ell, false)?;
@@ -269,7 +252,7 @@ pub fn track2(
                 latpt = latptnew;
                 lonpt = lonptnew;
             }
-            pts.push((lat2_, lon2_));
+            pts.push((lat2, lon2));
 
             Some(pts)
         }

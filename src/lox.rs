@@ -87,11 +87,10 @@ pub fn loxodrome_direct(
 
     let lon2 = lon1 + dlon;
 
-    if deg {
-        Some((lat2.to_degrees(), lon2.to_degrees()))
-    } else {
-        Some((lat2, lon2))
-    }
+    let lat2 = if deg { lat2.to_degrees() } else { lat2 };
+    let lon2 = if deg { lon2.to_degrees() } else { lon2 };
+
+    Some((lat2, lon2))
 }
 
 pub fn departure(lon1: f64, lon2: f64, lat: f64, ell: &Ellipsoid, deg: bool) -> Option<f64> {
@@ -133,9 +132,8 @@ pub fn meanm(lats: &[f64], lons: &[f64], ell: &Ellipsoid, deg: bool) -> Option<(
     let (lonbar, latbar, ..) = cart2sph(x, y, z);
     let latbar = authalic2geodetic(latbar, ell, false)?;
 
-    if deg {
-        Some((latbar.to_degrees(), lonbar.to_degrees()))
-    } else {
-        Some((latbar, lonbar))
-    }
+    let latbar = if deg { latbar.to_degrees() } else { latbar };
+    let lonbar = if deg { lonbar.to_degrees() } else { lonbar };
+
+    Some((latbar, lonbar))
 }

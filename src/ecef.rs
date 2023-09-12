@@ -10,20 +10,17 @@ pub fn geodetic2ecef(
     ell: &Ellipsoid,
     deg: bool,
 ) -> Option<(f64, f64, f64)> {
-    let (lat_, lon_) = if deg {
-        (lat.to_radians(), lon.to_radians())
-    } else {
-        (lat, lon)
-    };
+    let lat = if deg { lat.to_radians() } else { lat };
+    let lon = if deg { lon.to_radians() } else { lon };
 
-    if lat_.abs() > FRAC_PI_2 {
+    if lat.abs() > FRAC_PI_2 {
         return None;
     }
 
-    let sin_lat = lat_.sin();
-    let cos_lat = lat_.cos();
-    let sin_lon = lon_.sin();
-    let cos_lon = lon_.cos();
+    let sin_lat = lat.sin();
+    let cos_lat = lat.cos();
+    let sin_lon = lon.sin();
+    let cos_lon = lon.cos();
 
     let n = ell.semimajor_axis.powi(2)
         / (ell.semimajor_axis * cos_lat).hypot(ell.semiminor_axis * sin_lat);
@@ -76,26 +73,20 @@ pub fn ecef2geodetic(x: f64, y: f64, z: f64, ell: &Ellipsoid, deg: bool) -> (f64
 
     let alt = if inside { -alt } else { alt };
 
-    if deg {
-        let lat = lat.to_degrees();
-        let lon = lon.to_degrees();
-        (lat, lon, alt)
-    } else {
-        (lat, lon, alt)
-    }
+    let lat = if deg { lat.to_degrees() } else { lat };
+    let lon = if deg { lon.to_degrees() } else { lon };
+
+    (lat, lon, alt)
 }
 
 pub fn ecef2enuv(u: f64, v: f64, w: f64, lat0: f64, lon0: f64, deg: bool) -> (f64, f64, f64) {
-    let (lat0_, lon0_) = if deg {
-        (lat0.to_radians(), lon0.to_radians())
-    } else {
-        (lat0, lon0)
-    };
+    let lat0 = if deg { lat0.to_radians() } else { lat0 };
+    let lon0 = if deg { lon0.to_radians() } else { lon0 };
 
-    let sin_lat0 = lat0_.sin();
-    let cos_lat0 = lat0_.cos();
-    let sin_lon0 = lon0_.sin();
-    let cos_lon0 = lon0_.cos();
+    let sin_lat0 = lat0.sin();
+    let cos_lat0 = lat0.cos();
+    let sin_lon0 = lon0.sin();
+    let cos_lon0 = lon0.cos();
 
     let t = cos_lon0 * u + sin_lon0 * v;
     let u = -sin_lon0 * u + cos_lon0 * v;
@@ -121,16 +112,13 @@ pub fn ecef2enu(
 }
 
 pub fn enu2uvw(east: f64, north: f64, up: f64, lat0: f64, lon0: f64, deg: bool) -> (f64, f64, f64) {
-    let (lat0_, lon0_) = if deg {
-        (lat0.to_radians(), lon0.to_radians())
-    } else {
-        (lat0, lon0)
-    };
+    let lat0 = if deg { lat0.to_radians() } else { lat0 };
+    let lon0 = if deg { lon0.to_radians() } else { lon0 };
 
-    let sin_lat0 = lat0_.sin();
-    let cos_lat0 = lat0_.cos();
-    let sin_lon0 = lon0_.sin();
-    let cos_lon0 = lon0_.cos();
+    let sin_lat0 = lat0.sin();
+    let cos_lat0 = lat0.cos();
+    let sin_lon0 = lon0.sin();
+    let cos_lon0 = lon0.cos();
 
     let t = cos_lat0 * up - sin_lat0 * north;
     let w = sin_lat0 * up + cos_lat0 * north;
@@ -141,15 +129,13 @@ pub fn enu2uvw(east: f64, north: f64, up: f64, lat0: f64, lon0: f64, deg: bool) 
 }
 
 pub fn uvw2enu(u: f64, v: f64, w: f64, lat0: f64, lon0: f64, deg: bool) -> (f64, f64, f64) {
-    let (lat0_, lon0_) = if deg {
-        (lat0.to_radians(), lon0.to_radians())
-    } else {
-        (lat0, lon0)
-    };
-    let sin_lat0 = lat0_.sin();
-    let cos_lat0 = lat0_.cos();
-    let sin_lon0 = lon0_.sin();
-    let cos_lon0 = lon0_.cos();
+    let lat0 = if deg { lat0.to_radians() } else { lat0 };
+    let lon0 = if deg { lon0.to_radians() } else { lon0 };
+
+    let sin_lat0 = lat0.sin();
+    let cos_lat0 = lat0.cos();
+    let sin_lon0 = lon0.sin();
+    let cos_lon0 = lon0.cos();
 
     let t = cos_lon0 * u + sin_lon0 * v;
     let east = -sin_lon0 * u + cos_lon0 * v;
@@ -197,5 +183,6 @@ pub fn enu2ecef(
 ) -> Option<(f64, f64, f64)> {
     let (x0, y0, z0) = geodetic2ecef(lat0, lon0, h0, ell, deg)?;
     let (dx, dy, dz) = enu2uvw(e1, n1, u1, lat0, lon0, deg);
+    
     Some((x0 + dx, y0 + dy, z0 + dz))
 }

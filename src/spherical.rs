@@ -7,20 +7,15 @@ pub fn geodetic2spherical(
     ell: &Ellipsoid,
     deg: bool,
 ) -> Option<(f64, f64, f64)> {
-    let (lat_, lon_) = {
-        if deg {
-            (lat.to_radians(), lon.to_radians())
-        } else {
-            (lat, lon)
-        }
-    };
+    let lat = if deg { lat.to_radians() } else { lat };
+    let lon = if deg { lon.to_radians() } else { lon };
 
-    if lat_.abs() > std::f64::consts::FRAC_PI_2 {
+    if lat.abs() > std::f64::consts::FRAC_PI_2 {
         return None;
     }
 
-    let sin_lat = lat_.sin();
-    let cos_lat = lat_.cos();
+    let sin_lat = lat.sin();
+    let cos_lat = lat.cos();
 
     let n = ell.semimajor_axis.powi(2)
         / (ell.semimajor_axis * cos_lat).hypot(ell.semiminor_axis * sin_lat);
@@ -30,11 +25,10 @@ pub fn geodetic2spherical(
     let r = xy.hypot(z);
     let slat = (z / r).asin();
 
-    if deg {
-        Some((slat.to_degrees(), lon_.to_degrees(), r))
-    } else {
-        Some((slat, lon_, r))
-    }
+    let slat = if deg { slat.to_degrees() } else { slat };
+    let lon = if deg { lon.to_degrees() } else { lon };
+
+    Some((slat, lon, r))
 }
 
 pub fn spherical2geodetic(
@@ -44,19 +38,15 @@ pub fn spherical2geodetic(
     ell: &Ellipsoid,
     deg: bool,
 ) -> Option<(f64, f64, f64)> {
-    let (lat_, lon_) = {
-        if deg {
-            (lat.to_radians(), lon.to_radians())
-        } else {
-            (lat, lon)
-        }
-    };
+    let lat = if deg { lat.to_radians() } else { lat };
+    let lon = if deg { lon.to_radians() } else { lon };
+
     if lat.abs() > std::f64::consts::FRAC_PI_2 {
         return None;
     }
 
-    let sin_lat = lat_.sin();
-    let cos_lat = lat_.cos();
+    let sin_lat = lat.sin();
+    let cos_lat = lat.cos();
 
     let z = r * sin_lat;
     let p_0 = r.powi(2) * cos_lat.powi(2) / ell.semimajor_axis.powi(2);
@@ -74,9 +64,8 @@ pub fn spherical2geodetic(
     let glat = 2. * z.atan2(d + hypot_dz);
     let alt = (k + ell.eccentricity.powi(2) - 1.) / k * hypot_dz;
 
-    if deg {
-        Some((glat.to_degrees(), lon_.to_degrees(), alt))
-    } else {
-        Some((glat, lon_, alt))
-    }
+    let glat = if deg { glat.to_degrees() } else { glat };
+    let lon = if deg { lon.to_degrees() } else { lon };
+
+    Some((glat, lon, alt))
 }

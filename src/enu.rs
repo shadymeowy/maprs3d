@@ -16,11 +16,10 @@ pub fn enu2aer(e: f64, n: f64, u: f64, deg: bool) -> (f64, f64, f64) {
         az = az.rem_euclid(TAU);
     }
 
-    if deg {
-        (az.to_degrees(), elev.to_degrees(), slant_range)
-    } else {
-        (az, elev, slant_range)
-    }
+    let az = if deg { az.to_degrees() } else { az };
+    let elev = if deg { elev.to_degrees() } else { elev };
+    
+    (az, elev, slant_range)
 }
 
 pub fn aer2enu(az: f64, el: f64, srange: f64, deg: bool) -> (f64, f64, f64) {
@@ -32,6 +31,7 @@ pub fn aer2enu(az: f64, el: f64, srange: f64, deg: bool) -> (f64, f64, f64) {
     let e = r * az.sin();
     let n = r * az.cos();
     let u = srange * el.sin();
+    
     (e, n, u)
 }
 
