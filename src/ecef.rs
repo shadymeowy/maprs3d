@@ -89,11 +89,11 @@ pub fn ecef2enuv(u: f64, v: f64, w: f64, lat0: f64, lon0: f64, deg: bool) -> (f6
     let cos_lon0 = lon0.cos();
 
     let t = cos_lon0 * u + sin_lon0 * v;
-    let u = -sin_lon0 * u + cos_lon0 * v;
-    let w = cos_lat0 * t + sin_lat0 * w;
-    let v = -sin_lat0 * t + cos_lat0 * w;
+    let u_east = -sin_lon0 * u + cos_lon0 * v;
+    let w_up = cos_lat0 * t + sin_lat0 * w;
+    let v_north = -sin_lat0 * t + cos_lat0 * w;
 
-    (u, v, w)
+    (u_east, v_north, w_up)
 }
 
 pub fn ecef2enu(
